@@ -54,7 +54,7 @@ public class AccountDAO {
             PreparedStatement psmt = connection.prepareStatement(query);
             psmt.setString(1, username);
             ResultSet result = psmt.executeQuery();
-
+            
             if (result.first()) {
                 Account account = new Account();
                 account.setAccount_id(result.getInt("account_id"));

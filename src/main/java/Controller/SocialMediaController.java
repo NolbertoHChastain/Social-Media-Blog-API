@@ -27,7 +27,8 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
-        app.post("/register", this::registerHandler); // User Story starting point : Register
+        app.post("/register", this::registerHandler);   // User Story starting point : Register
+        app.post("/login", this::loginHandler);         // user story starting point : Login
 
         return app;
     }
@@ -52,10 +53,23 @@ public class SocialMediaController {
             context.json(addedAccount);
             context.status(HttpStatus.OK); // succeeded - 200
         } 
-        else {
-            System.out.println("addedAccount == null");
-            context.status(HttpStatus.BAD_REQUEST); // client error - 400
-        }
+        else context.status(HttpStatus.BAD_REQUEST); // client error - 400
+    }
+
+    /**
+     * handler handles login process, if given {@code account} exists
+     * user logins sucessfully, else unauthorized.
+     * @param context
+     */
+    public void loginHandler(Context context) {
+        Account account = context.bodyAsClass(Account.class);
+        Account existingAccount = accountService.verifyLogin(account);
+        
+        if (existingAccount != null) {
+            context.json(existingAccount); // with id
+            context.status(HttpStatus.OK);
+        } // if NOT null : valid
+        else context.status(HttpStatus.UNAUTHORIZED); // unauthorized - 401
     }
 
 

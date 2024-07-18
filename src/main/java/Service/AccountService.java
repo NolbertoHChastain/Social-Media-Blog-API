@@ -24,4 +24,20 @@ public class AccountService {
             return accountDAO.writeAccount(account);
         } else return null;
     }
+
+    /**
+     * Given {@code account} verifies it exists and matches
+     * the account stored in the database.
+     * @param username
+     * @return
+     */
+    public Account verifyLogin(Account account) {
+        Optional<Account> existingAccount = accountDAO.getAccountByUsername(account.getUsername());
+        
+        if (existingAccount.isPresent()) {
+            Account retrievedAccount = existingAccount.get();
+            if (account.getPassword().equals(retrievedAccount.getPassword())) return retrievedAccount;
+        }
+        return null; // does not exist
+    }
 }
