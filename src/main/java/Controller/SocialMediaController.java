@@ -36,6 +36,8 @@ public class SocialMediaController {
         app.post("/register", this::registerHandler);       // User Story starting point : Register
         app.post("/login", this::loginHandler);             // user story starting point : Login
         app.post("/messages", this::postMessagesHandler);   // user story starting point : create messages
+        app.get("/messages", this::getAllMessagesHandler);  // user story starting point : get all messsages
+
         return app;
     }
 
@@ -89,6 +91,16 @@ public class SocialMediaController {
             context.json(addedMessage);
             context.status(HttpStatus.OK);
         } else context.status(HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Retrieves all {@code Message} records.
+     * @param context the context used in response.
+     */
+    public void getAllMessagesHandler(Context context) {
+        List<Message> allMessages = messageService.getAllMessages();
+        context.json(allMessages);
+        context.status(HttpStatus.OK); // always
     }
 
 }

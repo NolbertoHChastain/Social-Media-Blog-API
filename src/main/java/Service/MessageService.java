@@ -5,6 +5,7 @@ import Model.Account;
 import DAO.MessageDAO;
 import DAO.AccountDAO;
 
+import java.util.List;
 import java.util.Optional;
 
 public class MessageService {
@@ -32,7 +33,15 @@ public class MessageService {
             String msgText = message.getMessage_text();
             if (!(msgText.isBlank() || msgText.length() > 255)) return messageDAO.writeMessage(message);
         }
-        System.out.println("after not being present=============================");
         return null;
     }
+
+    /**
+     * Gets all messages.
+     * @return all {@code Message} records, otherwise {@code null}.
+     */
+    public List<Message> getAllMessages() {
+        return messageDAO.getAllMessages();
+    }
+
 }
