@@ -9,6 +9,8 @@ import Model.Message;
 import Service.AccountService;
 import Service.MessageService;
 
+import java.util.List;
+
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
@@ -31,10 +33,9 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
-        app.post("/register", this::registerHandler);   // User Story starting point : Register
-        app.post("/login", this::loginHandler);         // user story starting point : Login
-        app.post("/messages", this::postMessagesHandler);
-
+        app.post("/register", this::registerHandler);       // User Story starting point : Register
+        app.post("/login", this::loginHandler);             // user story starting point : Login
+        app.post("/messages", this::postMessagesHandler);   // user story starting point : create messages
         return app;
     }
 
