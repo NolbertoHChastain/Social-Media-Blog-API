@@ -68,4 +68,32 @@ public class AccountDAO {
         return Optional.empty();
     }
 
+    /**
+     * Given {@code id} retrieves {@code Account}.
+     * @param id
+     * @return saved {@code Account}, otherwise {@code null}.
+     */
+    public Optional<Account> getAccountById(int id) {
+        try {
+            // 1. get connection -> prepare DQL -> execute query
+            Connection conn = ConnectionUtil.getConnection();
+            String query = "SELECT * FROM account WHERE account_id = ?";
+            PreparedStatement psmt = conn.prepareStatement(query);
+            psmt.setInt(1, id);
+            ResultSet rs = psmt.executeQuery();
+
+            // retrieve if found
+            if (rs.first()) {
+                Account retrievedAccount = new Account();
+                retrievedAccount.setAccount_id(rs.getInt("account_id"));
+                retrievedAccount.setUsername(rs.getString("username"));
+                retrievedAccount.setPassword(rs.getString("password"));
+                return Optional.of(retrievedAccount);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occured: " + e.toString());
+        }
+        return Optional.empty();
+    }
+
 }

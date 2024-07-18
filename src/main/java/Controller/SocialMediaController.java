@@ -5,7 +5,9 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -14,9 +16,11 @@ import Service.AccountService;
  */
 public class SocialMediaController {
     AccountService accountService;
+    MessageService messageService;
 
     public SocialMediaController() {
         this.accountService = new AccountService();
+        this.messageService = new MessageService();
     }
 
     /**
@@ -29,6 +33,7 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::registerHandler);   // User Story starting point : Register
         app.post("/login", this::loginHandler);         // user story starting point : Login
+        app.post("/messages", this::postMessagesHandler);
 
         return app;
     }
@@ -72,5 +77,17 @@ public class SocialMediaController {
         else context.status(HttpStatus.UNAUTHORIZED); // unauthorized - 401
     }
 
+    /**
+     * Persists new {@code messages} and updates {@code HttpStatus}.
+     * @param context the context containing {@code Message} to persist.
+     */
+    public void postMessagesHandler(Context context) {
+        Message message = context.bodyAsClass(Message.class);
+        Message addedMessage = messageService.addMessage(message);
+        if (addedMessage != null) {
+            context.json(addedMessage);
+            context.status(HttpStatus.OK);
+        } else context.status(HttpStatus.BAD_REQUEST);
+    }
 
 }
