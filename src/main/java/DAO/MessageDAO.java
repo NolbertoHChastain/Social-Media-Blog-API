@@ -52,7 +52,9 @@ public class MessageDAO {
      */
     public List<Message> getAllMessages() {
         List<Message> allMessages = new ArrayList<>();
+
         try {
+            // 1. get connection -> 2. prepare DQL -> execute query
             Connection conn = ConnectionUtil.getConnection();
             String query = "SELECT * FROM message";
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -70,6 +72,35 @@ public class MessageDAO {
             System.out.println("SQL Exception occurred: " + e.toString());
         }
         return allMessages;
+    }
+
+
+    /**
+     * given {@code message_id} return {@code Message} from database.
+     * @param message_id
+     * @return the {@code Message}, otherwise {@code null}.
+     */
+    public Message getMessageById(int message_id) {
+        try {
+            // 1. get connection -> 2. prepare DQL -> 3. execute query
+            Connection conn = ConnectionUtil.getConnection();
+            String query = "SELECT * FROM message WHERE message_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, message_id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.first()) {
+                Message message = new Message();
+                message.setMessage_id(rs.getInt("message_id"));
+                message.setMessage_text(rs.getString("message_text"));
+                message.setPosted_by(rs.getInt("posted_by"));
+                message.setTime_posted_epoch(rs.getLong("time_posted_epoch"));
+                return message;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occurred: " + e.toString());
+        }
+        return null;
     }
 
 }

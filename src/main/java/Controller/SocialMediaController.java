@@ -37,6 +37,7 @@ public class SocialMediaController {
         app.post("/login", this::loginHandler);             // user story starting point : Login
         app.post("/messages", this::postMessagesHandler);   // user story starting point : create messages
         app.get("/messages", this::getAllMessagesHandler);  // user story starting point : get all messsages
+        app.get("/messages/{message_id}", this::getMessageHandler);// user story starting point : get message
 
         return app;
     }
@@ -101,6 +102,12 @@ public class SocialMediaController {
         List<Message> allMessages = messageService.getAllMessages();
         context.json(allMessages);
         context.status(HttpStatus.OK); // always
+    }
+
+    public void getMessageHandler(Context context) {
+        Message message = messageService.getMessageById(Integer.parseInt(context.pathParam("message_id")));
+        if (message != null) context.json(message);
+        context.status(HttpStatus.OK);
     }
 
 }
