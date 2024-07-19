@@ -145,4 +145,34 @@ public class MessageDAO {
         return updated == 1 ? true : false;
     }
 
+    /**
+     * Retrieve all {@code Message} records for given {@code account_id}.
+     * @param account_id
+     * @return all user {@code Message} records, otherwise {@code null}.
+     */
+    public List<Message> getAllMessagesByUser(int account_id) {
+        List<Message> allUserMessages = new ArrayList<>();
+
+        try {
+            Connection conn = ConnectionUtil.getConnection();
+            String query = "SELECT * FROM message WHERE posted_by = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, account_id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Message message = new Message();
+                message.setMessage_id(rs.getInt("message_id"));
+                message.setMessage_text(rs.getString("message_text"));
+                message.setPosted_by(rs.getInt("posted_by"));
+                message.setTime_posted_epoch(rs.getLong("time_posted_epoch"));
+                allUserMessages.add(message);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occurred: " + e.toString());
+        }
+
+        return allUserMessages;
+    }
 }

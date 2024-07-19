@@ -86,4 +86,14 @@ public class MessageService {
         return null;
     }
 
+
+    /**
+     * Get all {@code Message} records for given {@code account_id}.
+     * @param account_id
+     * @return
+     */
+    public List<Message> getAllMessagesByUser(int account_id) {
+        return messageDAO.getAllMessagesByUser(account_id);
+    }
+
 }
