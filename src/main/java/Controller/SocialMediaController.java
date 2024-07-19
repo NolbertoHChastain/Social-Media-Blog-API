@@ -39,6 +39,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);  // user story starting point : get all messsages
         app.get("/messages/{message_id}", this::getMessageHandler);// user story starting point : get message
         app.delete("/messages/{message_id}", this::deleteMessageHandler); // user story starting point : delete message
+        app.patch("/messages/{message_id}", this::updateMessageTextHandler);    // user story end point : update message text
 
         return app;
     }
@@ -124,4 +125,20 @@ public class SocialMediaController {
         context.status(HttpStatus.OK);
     }
 
+
+    /**
+     * Updates {@code message_text} for a {@code Message} record,
+     * given it's {@code message_id}.
+     * @param context
+     */
+    public void updateMessageTextHandler(Context context) {
+        Message message = context.bodyAsClass(Message.class);
+        message.setMessage_id(Integer.parseInt(context.pathParam("message_id")));
+        Message updatedMessage = messageService.updateMessageTextById(message);
+
+        if (updatedMessage != null) {
+            context.json(updatedMessage);
+            context.status(HttpStatus.OK);
+        } else context.status(HttpStatus.BAD_REQUEST);
+    }
 }

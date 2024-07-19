@@ -127,4 +127,22 @@ public class MessageDAO {
         return 0;
     }
 
+
+    public boolean updateMessageTextById(Message message) {
+        int updated = 0;
+        try {
+            // 1. get connection -> prepare DML -> execute update
+            Connection conn = ConnectionUtil.getConnection();
+            String query = "UPDATE message SET message_text = ? WHERE message_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, message.getMessage_text());
+            pstmt.setInt(2, message.getMessage_id());
+            updated = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occurred: " + e.toString());
+        }
+        return updated == 1 ? true : false;
+    }
+
 }

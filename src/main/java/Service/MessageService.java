@@ -69,4 +69,21 @@ public class MessageService {
         return null;
     }
 
+    /**
+     * Update {@code Message} record.
+     * @param message
+     * @return the updated {@code Message}, otherwise {@code null}.
+     */
+    public Message updateMessageTextById(Message message) {
+        Optional<Message> retrievedMessage = Optional.ofNullable(this.getMessageById(message.getMessage_id()));
+        String msgText = message.getMessage_text();
+
+        if (retrievedMessage.isPresent() && !(msgText.isBlank() || msgText.length() > 255)) {
+            retrievedMessage.get().setMessage_text(message.getMessage_text());
+            message = retrievedMessage.get();
+            if(messageDAO.updateMessageTextById(message)) return message;
+        }
+        return null;
+    }
+
 }
