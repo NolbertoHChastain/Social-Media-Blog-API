@@ -48,10 +48,25 @@ public class MessageService {
     /**
      * Get {@code Message} given {@code message_id}.
      * @param message_id
-     * @return
+     * @return the {@code Message}, otherwise {@code null}.
      */
     public Message getMessageById(int message_id) {
-        return messageDAO.getMessageById(message_id);
+        Optional<Message> foundMessage = messageDAO.getMessageById(message_id);
+        return foundMessage.isPresent() ? foundMessage.get() : null;
+    }
+
+    /**
+     * Delete {@code Message} given {@code message_id}.
+     * @param message_id
+     * @return the deleted {@code Message}, otherwise {@code null}.
+     */
+    public Message deleteMessageById(int message_id) {
+        Optional<Message> messageToDelete = messageDAO.getMessageById(message_id);
+
+        if (messageToDelete.isPresent()) {
+            if(messageDAO.deleteMessageById(message_id) == 1) return messageToDelete.get();
+        }
+        return null;
     }
 
 }

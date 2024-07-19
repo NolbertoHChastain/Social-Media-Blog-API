@@ -38,6 +38,7 @@ public class SocialMediaController {
         app.post("/messages", this::postMessagesHandler);   // user story starting point : create messages
         app.get("/messages", this::getAllMessagesHandler);  // user story starting point : get all messsages
         app.get("/messages/{message_id}", this::getMessageHandler);// user story starting point : get message
+        app.delete("/messages/{message_id}", this::deleteMessageHandler); // user story starting point : delete message
 
         return app;
     }
@@ -104,9 +105,22 @@ public class SocialMediaController {
         context.status(HttpStatus.OK); // always
     }
 
+    /**
+     * Retrieves {@code Message} record given {@code message_id}.
+     */
     public void getMessageHandler(Context context) {
         Message message = messageService.getMessageById(Integer.parseInt(context.pathParam("message_id")));
         if (message != null) context.json(message);
+        context.status(HttpStatus.OK);
+    }
+
+    /**
+     * Deletes {@code Message} record given {@code message_id}.
+     * @param context
+     */
+    public void deleteMessageHandler(Context context) {
+        Message deletedMessage = messageService.deleteMessageById(Integer.parseInt(context.pathParam("message_id")));
+        if (deletedMessage != null) context.json(deletedMessage);
         context.status(HttpStatus.OK);
     }
 

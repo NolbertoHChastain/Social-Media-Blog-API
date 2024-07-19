@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 
 public class MessageDAO {
@@ -40,6 +41,7 @@ public class MessageDAO {
                 retrievedMessage.setTime_posted_epoch(message.getTime_posted_epoch());
                 return retrievedMessage;
             }
+
         } catch (SQLException e) {
             System.out.println("SQL Exception occured: " + e.toString());
         }
@@ -68,6 +70,7 @@ public class MessageDAO {
                 message.setTime_posted_epoch(rs.getLong("time_posted_epoch"));
                 allMessages.add(message);
             }
+
         } catch (SQLException e) {
             System.out.println("SQL Exception occurred: " + e.toString());
         }
@@ -80,7 +83,7 @@ public class MessageDAO {
      * @param message_id
      * @return the {@code Message}, otherwise {@code null}.
      */
-    public Message getMessageById(int message_id) {
+    public Optional<Message> getMessageById(int message_id) {
         try {
             // 1. get connection -> 2. prepare DQL -> 3. execute query
             Connection conn = ConnectionUtil.getConnection();
@@ -95,12 +98,33 @@ public class MessageDAO {
                 message.setMessage_text(rs.getString("message_text"));
                 message.setPosted_by(rs.getInt("posted_by"));
                 message.setTime_posted_epoch(rs.getLong("time_posted_epoch"));
-                return message;
+                return Optional.of(message);
             }
+
         } catch (SQLException e) {
             System.out.println("SQL Exception occurred: " + e.toString());
         }
-        return null;
+        return Optional.empty();
+    }
+
+    /**
+     * Given {@code message_id} delete {@code Message} from database.
+     * @param message_id
+     * @return number of deleted {@code records}, otherwise 0.
+     */
+    public int deleteMessageById(int message_id) {
+        try {
+            // 1. get connection -> 2. prepare DML -> execute update
+            Connection conn = ConnectionUtil.getConnection();
+            String query = "Delete FROM message WHERE message_id = ?";
+            PreparedStatement pstmt= conn.prepareStatement(query);
+            pstmt.setInt(1, message_id);
+            return pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occurred: " + e.toString());
+        }
+        return 0;
     }
 
 }
